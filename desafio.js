@@ -1,44 +1,42 @@
-// importo
-const productManager = require("./ProductManager");
-
+// importo e instancio la clase Producto
+const { productModel } = require("./DAOs/ProductManagerDaoFS");
 //TEST METODOS
 
-const productToAdd = {
-  title: "producto nuevo",
-  description: "prueba descripcion",
-  price: 1500,
-  thumbnail: "http://.com",
-  code: "s45ef7",
-  stock: 5,
-};
+(async () => {
+  // producto a agregar
+  const newProduct = {
+    title: "Ultimo testeo 2",
+    description: `descripcion de - Ultimo testeo 2`,
+    price: 4,
+    thumbnail: "#",
+    code: "f97gskz4",
+    stock: 112,
+  };
 
-// agregar producto ok
-console.log("---------------------- addProductoOk ----------------------");
-let addProductok = productManager.addProduct(productToAdd);
-console.log(addProductok);
-console.log("\n");
+  // ----------> agregar producto <----------
+  // let addProduct = await productModel.addProduct(newProduct);
+  // console.log("---------------------- addProductoTest ----------------------");
+  // console.log(addProduct + "\n");
 
-// agregar producto ok
-console.log("---------------------- addProductFail ----------------------");
-let addProductFail = productManager.addProduct(productToAdd);
-console.log(addProductFail);
-console.log("\n");
+  // ----------> obtener todos los productos <----------
+  // let productos = await productModel.getProducts();
+  // console.log("--------------------- getAllProductos ---------------------");
+  // console.log(productos);
+  // console.log("\n");
 
-// obtener producto por id Ok
-console.log("---------------------- getProductoOk ----------------------");
-let productosIdOk = productManager.getProductById(1);
-console.log(productosIdOk);
-console.log("\n");
-// obtener producto por id Ok
-console.log("---------------------- getProductoFail ----------------------");
-let productosIdFail = productManager.getProductById(2);
-console.log(productosIdFail);
-console.log("\n");
+  // ----------> obtener producto por id <----------
+  // let productoId = await productModel.getProductById(1);
+  // console.log("---------------------- getProductoOk ----------------------");
+  // console.log(productoId);
+  // console.log("\n");
 
-// obtener todos los productos
-console.log("--------------------- getAllProductos ---------------------");
-let productos = productManager.getProducts();
-console.log(productos);
-console.log("\n");
+  // ----------> editar producto por id <----------
+  // let updatedProduct = await productModel.updateProduct(1, newProduct);
+  // console.log("--------------------- updateProductTest ---------------------");
+  // console.log(updatedProduct + "\n");
 
-console.log("-----------------------------------------------------------");
+  // ----------> eliminar producto por id <----------
+  // let deletedProduct = await productModel.deleteProduct(1);
+  // console.log("--------------------- deleteProductTest ---------------------");
+  // console.log(deletedProduct + "\n");
+})();
