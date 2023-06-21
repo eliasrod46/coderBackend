@@ -2,7 +2,7 @@
   {
     "id": 1,
     "title": "producto 1",
-    "description": "prueba descripcion 2",
+    "description": "prueba descripcion 1",
     "price": 1500,
     "thumbnail": "#",
     "code": "s45ef7",
@@ -11,7 +11,7 @@
   {
     "id": 2,
     "title": "producto 2",
-    "description": "descripcion de prueba 2",
+    "description": "prueba descripcion 2",
     "price": 4,
     "thumbnail": "#",
     "code": "f97gkz4",

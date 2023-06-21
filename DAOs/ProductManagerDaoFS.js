@@ -139,6 +139,6 @@ class ProductManagerFS {
   }
 }
 
-const productModel = new ProductManagerFS("./productos.json");
+const productModel = new ProductManagerFS("./BBDDJson/productos.json");
 
 module.exports = { productModel };
