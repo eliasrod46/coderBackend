@@ -189,6 +189,7 @@ class ProductManagerFS {
   }
 }
 
-const productModel = new ProductManagerFS("./BBDDJson/products.json");
+// const productModel = new ProductManagerFS("./BBDDJson/products.json");
+const productModel = new ProductManagerFS("./BBDDJson/productsTest.json");
 
 module.exports = { productModel };

@@ -23,7 +23,7 @@ class CartManagerFS {
   // La ruta raíz POST / deberá crear un nuevo carrito con la siguiente estructura:
   // - Id:Number/String (A tu elección, de igual manera como con los productos, debes asegurar que nunca se dupliquen los ids y que este se autogenere).
   // - products: Array que contendrá objetos que representen cada producto
-  async addCart({ title, description, price, thumbnail, code, stock }) {
+  async addCart() {
     try {
       // Obtengo array de caritos
       const carts = await this.#arrayCarts();
@@ -41,16 +41,6 @@ class CartManagerFS {
       await fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2));
 
       return "El carrito fue creado con exito";
-    } catch (error) {
-      return `Se genero un error: ${error}`;
-    }
-  }
-
-  async getCarts() {
-    try {
-      // Obtengo array de caritos
-      const carts = await this.#arrayCarts();
-      return carts;
     } catch (error) {
       return `Se genero un error: ${error}`;
     }
@@ -80,28 +70,49 @@ class CartManagerFS {
     try {
       // Obtengo array de caritos
       const carts = await this.#arrayCarts();
-      const products = await productModel.getProductById(pid);
+      const recivedProduct = await productModel.getProductById(pid);
 
       // Busco si existe un producto con el id recibido
       const indexCart = carts.findIndex((cart) => cart.id === cid);
 
-      // si el producto existe lo modifico
-      if (indexProducto >= 0) {
-        productos[indexProducto] = { id, ...productData };
-        await fs.promises.writeFile(
-          this.path,
-          JSON.stringify(productos, null, 2)
-        );
-        return "El producto fue modificado con exito";
+      if (recivedProduct == "Not found") return "Producto no encontrado";
+      if (indexCart === -1) return "Carrito no encontrado";
+
+      // Busco si el articulo esta en el carrito
+      const foundProduct = carts[indexCart].products.findIndex(
+        (product) => product["product"] == recivedProduct.id
+      );
+
+      // verifico si el producto ya esta en el carrito
+      if (foundProduct === -1) {
+        carts[indexCart].products.push({
+          product: recivedProduct.id,
+          quantity: 1,
+        });
       } else {
-        throw new Error("No existe un producto con el id recibido");
+        carts[indexCart].products[foundProduct].quantity += 1;
       }
+
+      await fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2));
+      return "El producto fue agregado con exito al carrito";
+    } catch (error) {
+      return `Se genero un error: ${error}`;
+    }
+  }
+
+  //----------------------
+  async getCarts() {
+    try {
+      // Obtengo array de caritos
+      const carts = await this.#arrayCarts();
+      return carts;
     } catch (error) {
       return `Se genero un error: ${error}`;
     }
   }
 }
 
-const cartModel = new CartManagerFS("./BBDDJson/carts.json");
+// const cartModel = new CartManagerFS("./BBDDJson/carts.json");
+const cartModel = new CartManagerFS("./BBDDJson/cartsTest.json");
 
-module.exports = { productModel };
+module.exports = { cartModel };
