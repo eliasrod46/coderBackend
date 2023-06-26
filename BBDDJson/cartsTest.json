@@ -3,36 +3,36 @@
     "id": 1,
     "title": "producto 1",
     "description": "prueba descripcion 1",
-    "price": 1500,
+    "price": 12,
     "thumbnail": "#",
     "code": "s45ef7",
-    "stock": 5
+    "stock": 100
   },
   {
     "id": 2,
     "title": "producto 2",
     "description": "prueba descripcion 2",
-    "price": 4,
+    "price": 2450,
     "thumbnail": "#",
     "code": "f97gkz4",
-    "stock": 112
+    "stock": 23
   },
   {
     "id": 3,
     "title": "producto 3",
     "description": "prueba descripcion 3",
-    "price": 145,
+    "price": 345,
     "thumbnail": "#",
     "code": "skief7",
-    "stock": 502
+    "stock": 302
   },
   {
     "id": 4,
     "title": "producto 4",
     "description": "prueba descripcion 4",
-    "price": 10,
+    "price": 4023,
     "thumbnail": "#",
     "code": "s453a7",
-    "stock": 3
+    "stock": 40
   }
 ]

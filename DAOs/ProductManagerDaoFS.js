@@ -5,15 +5,30 @@ class ProductManagerFS {
     this.path = path;
   }
 
-  // Leo el archivo y guardo los datos convertidos en array
+  // Leo el archivo y guardo los datos convertidos en array(si no existe lo crea)
   async #arrayProducts() {
-    const productosStr = await fs.promises.readFile(this.path, "utf-8");
-    const productos = JSON.parse(productosStr);
-    return productos;
+    if (fs.existsSync(this.path)) {
+      const productosStr = await fs.promises.readFile(this.path, "utf-8");
+      const productos = JSON.parse(productosStr);
+      return productos;
+    } else {
+      await fs.promises.writeFile(this.path, "[]");
+      const productosStr = await fs.promises.readFile(this.path, "utf-8");
+      const productos = JSON.parse(productosStr);
+      return productos;
+    }
   }
 
   //método Agregar producto.
-  async addProduct({ title, description, price, thumbnail, code, stock }) {
+  async addProduct({
+    title,
+    description,
+    price,
+    thumbnail,
+    code,
+    stock,
+    category,
+  }) {
     try {
       // Obtengo array de productos
       const productos = await this.#arrayProducts();
@@ -22,8 +37,11 @@ class ProductManagerFS {
       const checkCodeDuplicate = productos.find(
         (product) => product.code === code
       );
+
       // Verifico que el producto no tengo un codigo repetido
-      if (checkCodeDuplicate) return "Codigo de producto ya existente";
+      if (checkCodeDuplicate) {
+        return "Codigo de producto ya existente";
+      }
 
       // asigno id autoincrementable
       let id = 0;
@@ -42,6 +60,8 @@ class ProductManagerFS {
         thumbnail,
         code,
         stock,
+        status: true,
+        category,
       };
       productos.push(newProduct);
       // Guardo el objeto en el archivo
@@ -94,18 +114,50 @@ class ProductManagerFS {
       const indexProducto = productos.findIndex(
         (producto) => producto.id === id
       );
+      if (indexProducto < 0) return "No existe un producto con el id recibido";
 
-      // si el producto existe lo modifico
-      if (indexProducto >= 0) {
-        productos[indexProducto] = { id, ...productData };
-        await fs.promises.writeFile(
-          this.path,
-          JSON.stringify(productos, null, 2)
+      // Validar “code” como unico en el caso de recibir un nuevo codigo
+      if (productData.code) {
+        const checkCodeDuplicate = productos.find(
+          (product) => product.code === productData.code
         );
-        return "El producto fue modificado con exito";
-      } else {
-        throw new Error("No existe un producto con el id recibido");
+        // Verifico que el producto no tengo un codigo repetido
+        if (checkCodeDuplicate) {
+          return "Codigo de producto ya existente";
+        }
       }
+
+      // Modifico solo los campos enviados, si no se recibe campo apra modificar mantiene el dato anterior
+      productos[indexProducto] = {
+        id,
+        title: productData.title
+          ? productData.title
+          : productos[indexProducto].title,
+        description: productData.description
+          ? productData.description
+          : productos[indexProducto].description,
+        price: productData.price
+          ? productData.price
+          : productos[indexProducto].price,
+        code: productData.code
+          ? productData.code
+          : productos[indexProducto].code,
+        stock: productData.stock
+          ? productData.stock
+          : productos[indexProducto].stock,
+        category: productData.category
+          ? productData.category
+          : productos[indexProducto].category,
+        thumbnail: productData.thumbnail
+          ? productData.thumbnail
+          : productos[indexProducto].thumbnail,
+      };
+
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(productos, null, 2)
+      );
+      return "El producto fue modificado con exito";
     } catch (error) {
       return `Se genero un error: ${error}`;
     }
@@ -123,22 +175,20 @@ class ProductManagerFS {
       );
 
       // si el producto existe lo modifico
-      if (indexProducto >= 0) {
-        productos.splice(indexProducto, 1);
-        await fs.promises.writeFile(
-          this.path,
-          JSON.stringify(productos, null, 2)
-        );
-        return `Se elimino el producto con el id indicado `;
-      } else {
-        return "No existe un producto con el id recibido";
-      }
+      if (indexProducto < 0) return "No existe un producto con el id recibido";
+
+      productos.splice(indexProducto, 1);
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(productos, null, 2)
+      );
+      return `Se elimino el producto con el id indicado `;
     } catch (error) {
       return `Se genero un error: ${error}`;
     }
   }
 }
 
-const productModel = new ProductManagerFS("./BBDDJson/productos.json");
+const productModel = new ProductManagerFS("./BBDDJson/products.json");
 
 module.exports = { productModel };
