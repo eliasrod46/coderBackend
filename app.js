@@ -4,28 +4,16 @@ const { productModel } = require("./DAOs/ProductManagerDaoFS");
 
 const app = express();
 app.use(morgan("dev"));
+app.use(express.json());
 
-app.get("/products", async (req, res) => {
-  const { limit } = req.query;
-  const products = await productModel.getProducts();
-  if (!limit) {
-    res.json(products);
-  } else if (Number(limit)) {
-    res.json(products.slice(0, limit));
-  } else {
-    res.send("Query limit must be numeric");
-  }
-});
+// La persistencia de la información se implementará utilizando el file system, donde los archivos “productos,json” y “carrito.json”, respaldan la información.
+// No es necesario realizar ninguna implementación visual, todo el flujo se puede realizar por Postman o por el cliente de tu preferencia.
 
-app.get("/products/:pid", async (req, res) => {
-  const { pid } = req.params;
-  if (Number(pid)) {
-    const producto = await productModel.getProductById(Number(pid));
-    res.json(producto);
-  } else {
-    res.send("Id must be numeric");
-  }
-});
+const { router: productRoutes } = require("./routes/product.routes");
+app.use("/api/products", productRoutes);
+
+const { router: cartRoutes } = require("./routes/cart.routes");
+app.use("/api/carts", cartRoutes);
 
 const port = 8080;
 app.listen(port, () => {
